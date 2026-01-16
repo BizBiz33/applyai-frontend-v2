@@ -482,6 +482,41 @@ select {
     text-align: center;
 }
 
+/* Form sections */
+.form-section {
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.form-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--blue-400);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.current-education-item {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.form-section .form-hint {
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
 /* Summary */
 .form-summary {
     background: var(--bg-secondary);

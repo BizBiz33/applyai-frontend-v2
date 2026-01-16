@@ -179,32 +179,50 @@ function addEducation() {
         <button type="button" class="remove-item" onclick="removeItem(this)">×</button>
         <div class="form-row">
             <div class="form-group">
-                <label>École / Université *</label>
-                <input type="text" name="school_${educationCount}" placeholder="Université Paris Dauphine" required>
+                <label>École / Université</label>
+                <input type="text" name="school_${educationCount}" placeholder="Lycée, Université...">
             </div>
             <div class="form-group">
-                <label>Diplôme *</label>
-                <select name="degree_${educationCount}" required>
+                <label>Diplôme obtenu</label>
+                <select name="degree_${educationCount}">
                     <option value="">Sélectionner</option>
-                    <option value="Bac">Bac</option>
-                    <option value="BTS">BTS</option>
-                    <option value="DUT">DUT</option>
-                    <option value="Licence">Licence</option>
-                    <option value="Bachelor">Bachelor</option>
-                    <option value="Master">Master</option>
-                    <option value="Doctorat">Doctorat</option>
+                    <optgroup label="Secondaire">
+                        <option value="Bac Général">Bac Général</option>
+                        <option value="Bac Technologique">Bac Technologique</option>
+                        <option value="Bac Professionnel">Bac Professionnel</option>
+                    </optgroup>
+                    <optgroup label="Bac +2">
+                        <option value="BTS">BTS</option>
+                        <option value="DUT">DUT</option>
+                        <option value="Prépa">Classe Préparatoire</option>
+                        <option value="L2">L2 / DEUG</option>
+                    </optgroup>
+                    <optgroup label="Bac +3">
+                        <option value="Licence">Licence</option>
+                        <option value="Licence Pro">Licence Professionnelle</option>
+                        <option value="Bachelor">Bachelor</option>
+                        <option value="BUT">BUT</option>
+                    </optgroup>
+                    <optgroup label="Bac +4/5">
+                        <option value="Master 1">Master 1</option>
+                        <option value="Master 2">Master 2</option>
+                        <option value="MBA">MBA</option>
+                        <option value="MSc">MSc</option>
+                        <option value="Diplôme Ingénieur">Diplôme Ingénieur</option>
+                        <option value="Diplôme Grande École">Diplôme Grande École</option>
+                    </optgroup>
                     <option value="Autre">Autre</option>
                 </select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group">
-                <label>Domaine d'études *</label>
-                <input type="text" name="field_${educationCount}" placeholder="Marketing Digital" required>
+                <label>Spécialité / Mention</label>
+                <input type="text" name="field_${educationCount}" placeholder="Économie, Sciences, Littéraire...">
             </div>
             <div class="form-group">
-                <label>Année d'obtention *</label>
-                <input type="number" name="year_${educationCount}" placeholder="2024" min="1990" max="2030" required>
+                <label>Année d'obtention</label>
+                <input type="number" name="year_${educationCount}" placeholder="2023" min="1990" max="2030">
             </div>
         </div>
     `;
@@ -381,12 +399,23 @@ function generateSummary() {
         </div>
     `;
 
-    // Formation
+    // Formation en cours
+    const currentProgram = formData.get('currentProgram');
+    const currentYear = formData.get('currentYear');
+    const currentSchool = formData.get('currentSchool');
+    html += `
+        <div class="summary-item">
+            <span class="summary-label">Formation en cours</span>
+            <span class="summary-value">${currentProgram} - ${currentYear}e année (${currentSchool})</span>
+        </div>
+    `;
+
+    // Diplômes obtenus
     const educationItems = document.querySelectorAll('.education-item');
     html += `
         <div class="summary-item">
-            <span class="summary-label">Formation(s)</span>
-            <span class="summary-value">${educationItems.length} formation(s)</span>
+            <span class="summary-label">Diplômes obtenus</span>
+            <span class="summary-value">${educationItems.length} diplôme(s)</span>
         </div>
     `;
 
@@ -486,8 +515,18 @@ document.getElementById('inscriptionForm')?.addEventListener('submit', async fun
             linkedinUrl: formData.get('linkedinUrl') || null,
             portfolioUrl: formData.get('portfolioUrl') || null,
 
-            // Profil
-            education: [],
+            // Formation en cours
+            currentEducation: {
+                school: formData.get('currentSchool'),
+                program: formData.get('currentProgram'),
+                currentYear: formData.get('currentYear'),
+                programDuration: formData.get('programDuration'),
+                major: formData.get('currentMajor'),
+                expectedGraduation: parseInt(formData.get('expectedGraduation'))
+            },
+
+            // Diplômes obtenus
+            completedEducation: [],
             experiences: [],
             skills: [],
             languages: [],
@@ -505,14 +544,16 @@ document.getElementById('inscriptionForm')?.addEventListener('submit', async fun
             }
         };
 
-        // Collecter les formations
+        // Collecter les diplômes obtenus
         for (let i = 0; i < educationCount; i++) {
-            if (formData.get(`school_${i}`)) {
-                data.education.push({
-                    school: formData.get(`school_${i}`),
-                    degree: formData.get(`degree_${i}`),
-                    field: formData.get(`field_${i}`),
-                    year: parseInt(formData.get(`year_${i}`))
+            const school = formData.get(`school_${i}`);
+            const degree = formData.get(`degree_${i}`);
+            if (school || degree) {
+                data.completedEducation.push({
+                    school: school || null,
+                    degree: degree || null,
+                    field: formData.get(`field_${i}`) || null,
+                    year: formData.get(`year_${i}`) ? parseInt(formData.get(`year_${i}`)) : null
                 });
             }
         }

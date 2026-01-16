@@ -129,45 +129,142 @@
                 <div class="form-step" data-step="3">
                     <div class="step-header">
                         <h2>Votre formation 🎓</h2>
-                        <p>Ajoutez vos diplômes et formations</p>
+                        <p>Renseignez votre formation en cours et vos diplômes obtenus</p>
                     </div>
-                    <div id="educationList">
-                        <div class="education-item">
+
+                    <!-- Formation en cours -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">📚 Formation en cours</h3>
+                        <div class="current-education-item">
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>École / Université *</label>
-                                    <input type="text" name="school_0" placeholder="Université Paris Dauphine" required>
+                                    <input type="text" id="currentSchool" name="currentSchool" placeholder="ESSEC, HEC, Université Paris Dauphine..." required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Diplôme *</label>
-                                    <select name="degree_0" required>
+                                    <label>Type de programme *</label>
+                                    <select id="currentProgram" name="currentProgram" required>
                                         <option value="">Sélectionner</option>
-                                        <option value="Bac">Bac</option>
-                                        <option value="BTS">BTS</option>
-                                        <option value="DUT">DUT</option>
-                                        <option value="Licence">Licence</option>
-                                        <option value="Bachelor">Bachelor</option>
-                                        <option value="Master">Master</option>
-                                        <option value="Doctorat">Doctorat</option>
+                                        <optgroup label="Grandes Écoles">
+                                            <option value="PGE">Programme Grande École (PGE)</option>
+                                            <option value="Ingénieur">Cycle Ingénieur</option>
+                                            <option value="Science Po">Science Po</option>
+                                        </optgroup>
+                                        <optgroup label="Université">
+                                            <option value="Licence">Licence</option>
+                                            <option value="Master">Master</option>
+                                            <option value="Doctorat">Doctorat</option>
+                                        </optgroup>
+                                        <optgroup label="Écoles spécialisées">
+                                            <option value="Bachelor">Bachelor</option>
+                                            <option value="BTS">BTS</option>
+                                            <option value="BUT">BUT (ex-DUT)</option>
+                                            <option value="Prépa">Classe Préparatoire</option>
+                                            <option value="MBA">MBA</option>
+                                            <option value="MSc">MSc / Master Spécialisé</option>
+                                        </optgroup>
                                         <option value="Autre">Autre</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Domaine d'études *</label>
-                                    <input type="text" name="field_0" placeholder="Marketing Digital" required>
+                                    <label>Année actuelle *</label>
+                                    <select id="currentYear" name="currentYear" required>
+                                        <option value="">Sélectionner</option>
+                                        <option value="1">1ère année</option>
+                                        <option value="2">2ème année</option>
+                                        <option value="3">3ème année</option>
+                                        <option value="4">4ème année</option>
+                                        <option value="5">5ème année</option>
+                                        <option value="6+">6ème année ou +</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Année d'obtention *</label>
-                                    <input type="number" name="year_0" placeholder="2024" min="1990" max="2030" required>
+                                    <label>Durée totale du programme *</label>
+                                    <select id="programDuration" name="programDuration" required>
+                                        <option value="">Sélectionner</option>
+                                        <option value="2">2 ans (BTS, Prépa...)</option>
+                                        <option value="3">3 ans (Licence, Bachelor, BUT...)</option>
+                                        <option value="4">4 ans</option>
+                                        <option value="5">5 ans (PGE, Ingénieur, Master...)</option>
+                                        <option value="6+">6 ans ou + (Doctorat, Médecine...)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Spécialisation / Majeure *</label>
+                                    <input type="text" id="currentMajor" name="currentMajor" placeholder="Finance, Marketing, Data Science..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Année de diplôme prévue *</label>
+                                    <input type="number" id="expectedGraduation" name="expectedGraduation" placeholder="2026" min="2024" max="2035" required>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn-add" onclick="addEducation()">
-                        <span>+</span> Ajouter une formation
-                    </button>
+
+                    <!-- Diplômes obtenus -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">🎓 Diplômes déjà obtenus</h3>
+                        <p class="form-hint">Ajoutez vos diplômes précédents (Bac, Licence, etc.)</p>
+                        <div id="educationList">
+                            <div class="education-item">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>École / Université</label>
+                                        <input type="text" name="school_0" placeholder="Lycée, Université...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Diplôme obtenu</label>
+                                        <select name="degree_0">
+                                            <option value="">Sélectionner</option>
+                                            <optgroup label="Secondaire">
+                                                <option value="Bac Général">Bac Général</option>
+                                                <option value="Bac Technologique">Bac Technologique</option>
+                                                <option value="Bac Professionnel">Bac Professionnel</option>
+                                            </optgroup>
+                                            <optgroup label="Bac +2">
+                                                <option value="BTS">BTS</option>
+                                                <option value="DUT">DUT</option>
+                                                <option value="Prépa">Classe Préparatoire</option>
+                                                <option value="L2">L2 / DEUG</option>
+                                            </optgroup>
+                                            <optgroup label="Bac +3">
+                                                <option value="Licence">Licence</option>
+                                                <option value="Licence Pro">Licence Professionnelle</option>
+                                                <option value="Bachelor">Bachelor</option>
+                                                <option value="BUT">BUT</option>
+                                            </optgroup>
+                                            <optgroup label="Bac +4/5">
+                                                <option value="Master 1">Master 1</option>
+                                                <option value="Master 2">Master 2</option>
+                                                <option value="MBA">MBA</option>
+                                                <option value="MSc">MSc</option>
+                                                <option value="Diplôme Ingénieur">Diplôme Ingénieur</option>
+                                                <option value="Diplôme Grande École">Diplôme Grande École</option>
+                                            </optgroup>
+                                            <option value="Autre">Autre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Spécialité / Mention</label>
+                                        <input type="text" name="field_0" placeholder="Économie, Sciences, Littéraire...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Année d'obtention</label>
+                                        <input type="number" name="year_0" placeholder="2023" min="1990" max="2030">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add" onclick="addEducation()">
+                            <span>+</span> Ajouter un diplôme obtenu
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Step 4: Expérience -->
