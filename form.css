@@ -1,0 +1,612 @@
+/* ============================================
+   ApplyAI - Form Styles
+   Styles pour le formulaire d'inscription
+   ============================================ */
+
+/* Page du formulaire */
+.form-page {
+    min-height: 100vh;
+    padding: 100px 20px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 700px;
+    background: var(--bg-card);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    padding: 40px;
+    margin-top: 20px;
+}
+
+/* Barre de progression */
+.progress-bar {
+    height: 4px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-500), var(--blue-400));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 14.28%; /* 1/7 pour 7 étapes */
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    min-width: 70px;
+}
+
+.progress-step.active,
+.progress-step.completed {
+    opacity: 1;
+}
+
+.step-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .step-dot {
+    background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+    border-color: var(--blue-500);
+    box-shadow: 0 4px 15px var(--blue-glow);
+}
+
+.progress-step.completed .step-dot {
+    background: var(--green-500);
+    border-color: var(--green-500);
+}
+
+.step-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.progress-step.active .step-label {
+    color: var(--text-primary);
+}
+
+/* Étapes du formulaire */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.step-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.step-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Groupes de formulaire */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.form-sublabel {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-weight: 400 !important;
+}
+
+.section-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--blue-400);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
+
+input.error,
+select.error,
+textarea.error {
+    border-color: #ef4444;
+}
+
+.error-message {
+    display: block;
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+/* Select styling */
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+    padding-right: 40px;
+}
+
+/* Provider select (Email) */
+.provider-select {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.provider-option {
+    cursor: pointer;
+}
+
+.provider-option input {
+    display: none;
+}
+
+.provider-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 30px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.provider-option input:checked + .provider-card {
+    border-color: var(--blue-500);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.provider-card:hover {
+    border-color: var(--blue-400);
+}
+
+.provider-icon {
+    font-size: 2rem;
+}
+
+/* Contract type select */
+.contract-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.contract-option {
+    cursor: pointer;
+    flex: 1;
+    min-width: 100px;
+}
+
+.contract-option input {
+    display: none;
+}
+
+.contract-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 15px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.contract-option input:checked + .contract-card {
+    border-color: var(--blue-500);
+    background: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 15px var(--blue-glow);
+}
+
+.contract-card:hover {
+    border-color: var(--blue-400);
+    transform: translateY(-2px);
+}
+
+.contract-icon {
+    font-size: 1.8rem;
+}
+
+.contract-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Domain select (checkboxes) */
+.domain-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.domain-option {
+    cursor: pointer;
+}
+
+.domain-option input {
+    display: none;
+}
+
+.domain-card {
+    display: inline-block;
+    padding: 10px 18px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.domain-option input:checked + .domain-card {
+    border-color: var(--blue-500);
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--blue-400);
+}
+
+.domain-card:hover {
+    border-color: var(--blue-400);
+}
+
+/* Advanced options */
+.advanced-options {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+/* Education & Experience items */
+.education-item,
+.experience-item,
+.language-item {
+    position: relative;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.remove-item {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.2);
+    border: none;
+    color: #ef4444;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.remove-item:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* Bouton ajouter */
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-add:hover {
+    border-color: var(--blue-500);
+    color: var(--blue-400);
+}
+
+.btn-add.btn-small {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+/* Skills preview */
+.skills-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.skill-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    color: var(--blue-400);
+}
+
+/* Upload zone */
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--blue-500);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.upload-zone p {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.upload-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Form hint */
+.form-hint {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Summary */
+.form-summary {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 30px;
+}
+
+.form-summary h3 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    color: var(--text-muted);
+}
+
+.summary-value {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Navigation */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-submit {
+    min-width: 200px;
+}
+
+.btn-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success message */
+.success-message {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.success-message h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.success-message p {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.success-message .btn-primary {
+    margin-top: 30px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 25px 20px;
+    }
+
+    .step-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .provider-select,
+    .contract-select {
+        flex-direction: column;
+    }
+
+    .provider-card,
+    .contract-card {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .contract-option {
+        min-width: 100%;
+    }
+
+    .form-navigation {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-navigation button {
+        width: 100%;
+    }
+}

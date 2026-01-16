@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - ApplyAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation simplifiée -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">ApplyAI</span>
+            </a>
+            <a href="login.html" class="btn-secondary">Déjà un compte ?</a>
+        </div>
+    </nav>
+
+    <!-- Formulaire d'inscription -->
+    <main class="form-page">
+        <div class="form-container">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <span class="step-dot">1</span>
+                    <span class="step-label">Email</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <span class="step-dot">2</span>
+                    <span class="step-label">Profil</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <span class="step-dot">3</span>
+                    <span class="step-label">Formation</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <span class="step-dot">4</span>
+                    <span class="step-label">Expérience</span>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <span class="step-dot">5</span>
+                    <span class="step-label">Compétences</span>
+                </div>
+                <div class="progress-step" data-step="6">
+                    <span class="step-dot">6</span>
+                    <span class="step-label">CV</span>
+                </div>
+                <div class="progress-step" data-step="7">
+                    <span class="step-dot">7</span>
+                    <span class="step-label">Recherche</span>
+                </div>
+            </div>
+
+            <!-- Form Steps -->
+            <form id="inscriptionForm">
+                
+                <!-- Step 1: Email -->
+                <div class="form-step active" data-step="1">
+                    <div class="step-header">
+                        <h2>Bienvenue sur ApplyAI 👋</h2>
+                        <p>Commençons par votre adresse email</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" name="email" placeholder="vous@exemple.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Votre fournisseur email</label>
+                        <div class="provider-select">
+                            <label class="provider-option">
+                                <input type="radio" name="emailProvider" value="gmail" checked>
+                                <span class="provider-card">
+                                    <span class="provider-icon">📧</span>
+                                    <span>Gmail</span>
+                                </span>
+                            </label>
+                            <label class="provider-option">
+                                <input type="radio" name="emailProvider" value="outlook">
+                                <span class="provider-card">
+                                    <span class="provider-icon">📬</span>
+                                    <span>Outlook</span>
+                                </span>
+                            </label>
+                            <label class="provider-option">
+                                <input type="radio" name="emailProvider" value="zimbra">
+                                <span class="provider-card">
+                                    <span class="provider-icon">📨</span>
+                                    <span>Zimbra</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Profil -->
+                <div class="form-step" data-step="2">
+                    <div class="step-header">
+                        <h2>Vos informations personnelles</h2>
+                        <p>Ces informations apparaîtront dans vos candidatures</p>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Nom complet *</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Jean Dupont" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Téléphone</label>
+                            <input type="tel" id="phone" name="phone" placeholder="06 12 34 56 78">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkedinUrl">Profil LinkedIn</label>
+                        <input type="url" id="linkedinUrl" name="linkedinUrl" placeholder="https://linkedin.com/in/votre-profil">
+                    </div>
+                    <div class="form-group">
+                        <label for="portfolioUrl">Portfolio / Site web</label>
+                        <input type="url" id="portfolioUrl" name="portfolioUrl" placeholder="https://votre-portfolio.com">
+                    </div>
+                </div>
+
+                <!-- Step 3: Formation -->
+                <div class="form-step" data-step="3">
+                    <div class="step-header">
+                        <h2>Votre formation 🎓</h2>
+                        <p>Ajoutez vos diplômes et formations</p>
+                    </div>
+                    <div id="educationList">
+                        <div class="education-item">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>École / Université *</label>
+                                    <input type="text" name="school_0" placeholder="Université Paris Dauphine" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Diplôme *</label>
+                                    <select name="degree_0" required>
+                                        <option value="">Sélectionner</option>
+                                        <option value="Bac">Bac</option>
+                                        <option value="BTS">BTS</option>
+                                        <option value="DUT">DUT</option>
+                                        <option value="Licence">Licence</option>
+                                        <option value="Bachelor">Bachelor</option>
+                                        <option value="Master">Master</option>
+                                        <option value="Doctorat">Doctorat</option>
+                                        <option value="Autre">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Domaine d'études *</label>
+                                    <input type="text" name="field_0" placeholder="Marketing Digital" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Année d'obtention *</label>
+                                    <input type="number" name="year_0" placeholder="2024" min="1990" max="2030" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add" onclick="addEducation()">
+                        <span>+</span> Ajouter une formation
+                    </button>
+                </div>
+
+                <!-- Step 4: Expérience -->
+                <div class="form-step" data-step="4">
+                    <div class="step-header">
+                        <h2>Vos expériences 💼</h2>
+                        <p>Stages, alternances, emplois...</p>
+                    </div>
+                    <div id="experienceList">
+                        <div class="experience-item">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Entreprise *</label>
+                                    <input type="text" name="company_0" placeholder="Nom de l'entreprise" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Poste *</label>
+                                    <input type="text" name="position_0" placeholder="Marketing Manager" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Durée *</label>
+                                    <input type="text" name="duration_0" placeholder="6 mois, 1 an..." required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description des missions</label>
+                                <textarea name="description_0" placeholder="Décrivez vos principales missions et réalisations..." rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add" onclick="addExperience()">
+                        <span>+</span> Ajouter une expérience
+                    </button>
+                    <p class="form-hint">💡 Pas encore d'expérience ? Pas de souci, passez à l'étape suivante.</p>
+                </div>
+
+                <!-- Step 5: Compétences -->
+                <div class="form-step" data-step="5">
+                    <div class="step-header">
+                        <h2>Vos compétences ⚡</h2>
+                        <p>Ajoutez vos compétences et langues</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Compétences clés *</label>
+                        <p class="form-sublabel">Séparez par des virgules (ex: Excel, Python, Marketing Digital)</p>
+                        <input type="text" id="skills" name="skills" placeholder="Excel, Python, SEO, Communication..." required>
+                        <div class="skills-preview" id="skillsPreview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Langues</label>
+                        <div id="languagesList">
+                            <div class="language-item">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <input type="text" name="language_0" placeholder="Anglais">
+                                    </div>
+                                    <div class="form-group">
+                                        <select name="level_0">
+                                            <option value="">Niveau</option>
+                                            <option value="Débutant">Débutant</option>
+                                            <option value="Intermédiaire">Intermédiaire</option>
+                                            <option value="Avancé">Avancé</option>
+                                            <option value="Courant">Courant</option>
+                                            <option value="Bilingue">Bilingue</option>
+                                            <option value="Natif">Natif</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add btn-small" onclick="addLanguage()">
+                            <span>+</span> Ajouter une langue
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 6: CV -->
+                <div class="form-step" data-step="6">
+                    <div class="step-header">
+                        <h2>Votre CV 📄</h2>
+                        <p>Uploadez votre CV ou collez un lien</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Lien vers votre CV *</label>
+                        <p class="form-sublabel">Google Drive, Dropbox, ou autre lien public</p>
+                        <input type="url" id="cvUrl" name="cvUrl" placeholder="https://drive.google.com/..." required>
+                    </div>
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📎</div>
+                        <p>Ou glissez votre CV ici</p>
+                        <span class="upload-hint">PDF, DOC, DOCX (max 5MB)</span>
+                        <input type="file" id="cvFile" accept=".pdf,.doc,.docx" hidden>
+                    </div>
+                </div>
+
+                <!-- Step 7: Recherche d'emploi -->
+                <div class="form-step" data-step="7">
+                    <div class="step-header">
+                        <h2>Votre recherche 🎯</h2>
+                        <p>Définissez vos critères de recherche d'emploi</p>
+                    </div>
+
+                    <!-- Type de contrat -->
+                    <div class="form-group">
+                        <label>Type de contrat recherché *</label>
+                        <div class="contract-select">
+                            <label class="contract-option">
+                                <input type="radio" name="contractType" value="stage" required>
+                                <span class="contract-card">
+                                    <span class="contract-icon">🎓</span>
+                                    <span class="contract-label">Stage</span>
+                                </span>
+                            </label>
+                            <label class="contract-option">
+                                <input type="radio" name="contractType" value="alternance">
+                                <span class="contract-card">
+                                    <span class="contract-icon">📚</span>
+                                    <span class="contract-label">Alternance</span>
+                                </span>
+                            </label>
+                            <label class="contract-option">
+                                <input type="radio" name="contractType" value="cdi">
+                                <span class="contract-card">
+                                    <span class="contract-icon">💼</span>
+                                    <span class="contract-label">CDI</span>
+                                </span>
+                            </label>
+                            <label class="contract-option">
+                                <input type="radio" name="contractType" value="cdd">
+                                <span class="contract-card">
+                                    <span class="contract-icon">📝</span>
+                                    <span class="contract-label">CDD</span>
+                                </span>
+                            </label>
+                            <label class="contract-option">
+                                <input type="radio" name="contractType" value="freelance">
+                                <span class="contract-card">
+                                    <span class="contract-icon">🚀</span>
+                                    <span class="contract-label">Freelance</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Domaine / Secteur -->
+                    <div class="form-group">
+                        <label>Domaine / Secteur d'activité *</label>
+                        <div class="domain-select">
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="marketing">
+                                <span class="domain-card">Marketing / Communication</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="finance">
+                                <span class="domain-card">Finance / Comptabilité</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="tech">
+                                <span class="domain-card">Tech / IT / Data</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="ingenierie">
+                                <span class="domain-card">Ingénierie</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="sante">
+                                <span class="domain-card">Santé / Médical</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="rh">
+                                <span class="domain-card">Ressources Humaines</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="commerce">
+                                <span class="domain-card">Commerce / Vente</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="juridique">
+                                <span class="domain-card">Juridique / Droit</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="design">
+                                <span class="domain-card">Design / Créatif</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="logistique">
+                                <span class="domain-card">Logistique / Supply Chain</span>
+                            </label>
+                            <label class="domain-option">
+                                <input type="checkbox" name="domains" value="autre">
+                                <span class="domain-card">Autre</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Localisation -->
+                    <div class="form-group">
+                        <label for="location">Localisation souhaitée *</label>
+                        <input type="text" id="location" name="location" placeholder="Paris, Lyon, Remote..." required>
+                    </div>
+
+                    <!-- Options avancées -->
+                    <div class="form-group">
+                        <label class="section-label">Options avancées (facultatif)</label>
+                        <div class="advanced-options">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="specificPosition">Poste précis recherché</label>
+                                    <input type="text" id="specificPosition" name="specificPosition" placeholder="Ex: Chef de projet marketing">
+                                </div>
+                                <div class="form-group">
+                                    <label for="salaryMin">Salaire minimum (€/an)</label>
+                                    <input type="number" id="salaryMin" name="salaryMin" placeholder="35000">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="seniority">Niveau d'expérience</label>
+                                    <select id="seniority" name="seniority">
+                                        <option value="">Peu importe</option>
+                                        <option value="junior">Junior (0-2 ans)</option>
+                                        <option value="confirme">Confirmé (3-5 ans)</option>
+                                        <option value="senior">Senior (5+ ans)</option>
+                                        <option value="lead">Lead / Manager</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="flexibility">Flexibilité</label>
+                                    <select id="flexibility" name="flexibility">
+                                        <option value="">Peu importe</option>
+                                        <option value="onsite">Sur site uniquement</option>
+                                        <option value="hybrid">Hybride</option>
+                                        <option value="remote">Full remote</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Récapitulatif -->
+                    <div class="form-summary">
+                        <h3>Récapitulatif de votre profil</h3>
+                        <div id="summaryContent"></div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
+                        ← Précédent
+                    </button>
+                    <button type="button" class="btn-primary" id="nextBtn" onclick="changeStep(1)">
+                        Continuer →
+                    </button>
+                    <button type="submit" class="btn-primary btn-submit" id="submitBtn" style="display: none;">
+                        <span class="btn-text">🚀 Créer mon compte</span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span> Création en cours...
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="form.js"></script>
+</body>
+</html>
+```
+
+---
+
+## ✅ INSTRUCTIONS
+
+1. **Nouveau fichier** dans TextEdit/VS Code
+2. **Copiez TOUT le code ci-dessus**
+3. **Collez-le**
+4. **Enregistrer sous** : `inscription.html`
+5. Dans le dossier `ApplyAI`
+
+---
+
+## 📁 VOUS AVEZ MAINTENANT :
+```
+📁 ApplyAI/
+   📄 index.html       ← Fichier 1 ✅
+   📄 styles.css       ← Fichier 2 ✅
+   📄 inscription.html ← Fichier 3 ✅
