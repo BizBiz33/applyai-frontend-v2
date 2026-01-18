@@ -829,6 +829,46 @@ function initCountrySelector() {
     document.querySelectorAll('input[name="country"]').forEach(input => {
         input.addEventListener('change', () => {
             updateCitiesForCountry(input.value);
+
+            // Si "Autres pays" est sélectionné, cacher les villes françaises et afficher automatiquement le sélecteur d'autres villes
+            const citiesContainer = document.getElementById('citiesContainer');
+            const otherCitiesSelector = document.getElementById('otherCitiesSelector');
+            const otherCityCheckbox = document.querySelector('input[name="cities"][value="other"]');
+
+            if (input.value === 'other') {
+                // Cacher les villes françaises principales (sauf remote et options "autre")
+                if (citiesContainer) {
+                    citiesContainer.querySelectorAll('input[name="cities"]').forEach(cityInput => {
+                        const label = cityInput.closest('.tf-choice');
+                        if (cityInput.value !== 'remote' && cityInput.value !== 'other' && cityInput.value !== 'custom_france') {
+                            label.style.display = 'none';
+                            cityInput.checked = false;
+                        }
+                    });
+                    // Afficher automatiquement le sélecteur d'autres villes
+                    if (otherCityCheckbox) {
+                        otherCityCheckbox.checked = true;
+                        updateCheckboxState(otherCityCheckbox);
+                    }
+                    if (otherCitiesSelector) {
+                        otherCitiesSelector.style.display = 'block';
+                        populateOtherCities();
+                    }
+                    // Cacher l'option "Autre ville (écrire)" pour France
+                    const customCityChoice = document.getElementById('customCityChoice');
+                    if (customCityChoice) customCityChoice.style.display = 'none';
+                }
+            } else {
+                // Afficher toutes les villes françaises
+                if (citiesContainer) {
+                    citiesContainer.querySelectorAll('.tf-choice').forEach(label => {
+                        label.style.display = '';
+                    });
+                    // Réafficher l'option "Autre ville (écrire)" pour France
+                    const customCityChoice = document.getElementById('customCityChoice');
+                    if (customCityChoice) customCityChoice.style.display = '';
+                }
+            }
         });
     });
 }
@@ -1287,9 +1327,11 @@ function populateOtherCities() {
 
     if (countryRadio) {
         if (countryRadio.value === 'other') {
-            // Get all checked other countries
+            // Get all checked other countries (excluding 'custom')
             document.querySelectorAll('input[name="otherCountries"]:checked').forEach(cb => {
-                countries.push(cb.value);
+                if (cb.value !== 'custom') {
+                    countries.push(cb.value);
+                }
             });
         } else {
             countries.push(countryRadio.value);
@@ -1297,6 +1339,45 @@ function populateOtherCities() {
     }
 
     if (countries.length === 0) {
+        // Si "Autres pays" est sélectionné mais aucun pays coché, afficher option de saisie manuelle
+        if (countryRadio && countryRadio.value === 'other') {
+            const manualCityWrapper = document.createElement('div');
+            manualCityWrapper.className = 'tf-custom-city-wrapper';
+            manualCityWrapper.innerHTML = `
+                <p class="tf-no-cities">Sélectionnez des pays dans la question précédente, ou saisissez une ville manuellement :</p>
+                <label class="tf-choice tf-choice-tag tf-choice-other" style="margin-top: 15px;">
+                    <input type="checkbox" name="otherCities" value="custom_manual" class="custom-city-checkbox" data-country="manual">
+                    <span class="tf-choice-text">✏️ Saisir une ville manuellement</span>
+                </label>
+                <div class="tf-custom-city-input" style="display: none;">
+                    <input type="text" name="customCity_manual" class="tf-input tf-input-small" placeholder="Entrez le nom de la ville">
+                </div>
+            `;
+
+            const customCheckbox = manualCityWrapper.querySelector('.custom-city-checkbox');
+            const customInputWrapper = manualCityWrapper.querySelector('.tf-custom-city-input');
+            const customInput = manualCityWrapper.querySelector('input[type="text"]');
+
+            customCheckbox.addEventListener('change', () => {
+                updateCheckboxState(customCheckbox);
+                if (customCheckbox.checked) {
+                    customInputWrapper.style.display = 'block';
+                    customInput.focus();
+                } else {
+                    customInputWrapper.style.display = 'none';
+                    customInput.value = '';
+                }
+            });
+
+            customInput.addEventListener('input', () => {
+                if (!formData.customCities) formData.customCities = {};
+                formData.customCities.manual = customInput.value;
+            });
+
+            otherCitiesList.appendChild(manualCityWrapper);
+            return;
+        }
+
         otherCitiesList.innerHTML = '<p class="tf-no-cities">Veuillez d\'abord sélectionner un pays</p>';
         return;
     }
