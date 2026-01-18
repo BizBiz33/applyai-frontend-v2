@@ -1457,22 +1457,25 @@ function populateOtherCities() {
 }
 
 // ============================================
-// CUSTOM CITY INPUT (FRANCE - MAIN Q9)
+// CUSTOM CITY INPUT (FRANCE - MAIN Q9) - POPUP STYLE
 // ============================================
 
 function initCustomCityFranceInput() {
     const customCityCheckbox = document.querySelector('.custom-city-main-checkbox');
-    const customCityInputWrapper = document.getElementById('customCityInputWrapper');
+    const customCityPopup = document.getElementById('customCityPopup');
     const customCityInput = document.getElementById('customCityFranceInput');
 
-    if (!customCityCheckbox || !customCityInputWrapper || !customCityInput) return;
+    if (!customCityCheckbox || !customCityPopup || !customCityInput) return;
 
     customCityCheckbox.addEventListener('change', () => {
         if (customCityCheckbox.checked) {
-            customCityInputWrapper.style.display = 'block';
-            customCityInput.focus();
+            // Position popup below the "Autre" button
+            customCityPopup.style.display = 'block';
+            setTimeout(() => {
+                customCityInput.focus();
+            }, 50);
         } else {
-            customCityInputWrapper.style.display = 'none';
+            customCityPopup.style.display = 'none';
             customCityInput.value = '';
             // Remove from formData
             if (formData.customCities) {
@@ -1485,6 +1488,16 @@ function initCustomCityFranceInput() {
     customCityInput.addEventListener('input', () => {
         if (!formData.customCities) formData.customCities = {};
         formData.customCities.france_main = customCityInput.value;
+    });
+
+    // Allow Enter to validate
+    customCityInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            // Keep the popup open but just blur the input
+            customCityInput.blur();
+        }
     });
 }
 
@@ -1697,6 +1710,64 @@ style.textContent = `
 
     .tf-choice-other:hover {
         border-color: var(--blue-400) !important;
+    }
+
+    /* Custom city popup */
+    .tf-custom-city-popup {
+        margin-top: 16px;
+        padding: 16px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        position: relative;
+        animation: popupSlideIn 0.2s ease-out;
+        max-width: 280px;
+    }
+
+    .tf-custom-city-popup::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        right: 24px;
+        width: 14px;
+        height: 14px;
+        background: var(--bg-secondary);
+        border-left: 1px solid var(--border-color);
+        border-top: 1px solid var(--border-color);
+        transform: rotate(45deg);
+    }
+
+    .tf-popup-input {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        color: var(--text-primary);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tf-popup-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .tf-popup-input:focus {
+        border-color: var(--blue-500);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    @keyframes popupSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* Success actions styles */

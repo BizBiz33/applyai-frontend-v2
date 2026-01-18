@@ -554,27 +554,16 @@
                             <input type="checkbox" name="cities" value="remote">
                             <span class="tf-choice-text">🏠 Remote</span>
                         </label>
-                        <label class="tf-choice tf-choice-tag tf-choice-other" id="otherCityChoice">
-                            <input type="checkbox" name="cities" value="other">
-                            <span class="tf-choice-text">🔍 Autre ville...</span>
-                        </label>
                         <label class="tf-choice tf-choice-tag tf-choice-other" id="customCityChoice">
                             <input type="checkbox" name="cities" value="custom_france" class="custom-city-main-checkbox">
-                            <span class="tf-choice-text">✏️ Autre ville (écrire)</span>
+                            <span class="tf-choice-text">✏️ Autre</span>
                         </label>
                     </div>
 
-                    <!-- Input pour ville personnalisée France -->
-                    <div class="tf-custom-input-wrapper" id="customCityInputWrapper" style="display: none; margin-top: 15px;">
-                        <input type="text" name="customCityFrance" id="customCityFranceInput" class="tf-input" placeholder="Entrez le nom de votre ville...">
-                    </div>
-
-                    <!-- Liste des autres villes (cachée par défaut) -->
-                    <div class="tf-other-cities" id="otherCitiesSelector" style="display: none;">
-                        <p class="tf-subtitle" style="margin-top: 20px;">Sélectionnez parmi toutes les villes</p>
-                        <div class="tf-choices tf-choices-multi tf-cities-list" id="otherCitiesList">
-                            <!-- Les villes seront générées dynamiquement par JS selon le pays -->
-                        </div>
+                    <!-- Popup pour ville personnalisée -->
+                    <div class="tf-custom-city-popup" id="customCityPopup" style="display: none;">
+                        <div class="tf-popup-arrow"></div>
+                        <input type="text" name="customCityFrance" id="customCityFranceInput" class="tf-popup-input" placeholder="Entrez votre ville...">
                     </div>
                 </div>
             </div>
