@@ -244,6 +244,30 @@ body {
     border-color: var(--blue-500);
 }
 
+/* Fix autocomplete background - CRITICAL */
+.tf-input:-webkit-autofill,
+.tf-input:-webkit-autofill:hover,
+.tf-input:-webkit-autofill:focus,
+.tf-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    background-color: transparent !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.tf-input:-moz-autofill,
+.tf-input:-moz-autofill-preview {
+    background-color: transparent !important;
+}
+
+/* Ensure inputs always have transparent background */
+.tf-input,
+.tf-input:focus,
+.tf-input:active {
+    background-color: transparent !important;
+    -webkit-background-clip: text;
+}
+
 /* Input line animation */
 .tf-input-line {
     position: absolute;
@@ -778,5 +802,504 @@ body {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   Textarea
+   ============================================ */
+.tf-textarea-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.tf-textarea {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    font-weight: 400;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    outline: none;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color var(--duration-fast) ease;
+    caret-color: var(--blue-400);
+}
+
+.tf-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.tf-textarea:focus {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px var(--blue-glow);
+}
+
+.tf-textarea-counter {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   Experiences Section
+   ============================================ */
+.tf-experiences-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.tf-experience-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+}
+
+.tf-experience-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.tf-input-small {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color var(--duration-fast) ease;
+}
+
+.tf-input-small::placeholder {
+    color: var(--text-muted);
+}
+
+.tf-input-small:focus {
+    border-color: var(--blue-500);
+}
+
+/* Fix autocomplete for small inputs */
+.tf-input-small:-webkit-autofill,
+.tf-input-small:-webkit-autofill:hover,
+.tf-input-small:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-card) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+.tf-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all var(--duration-fast) ease;
+}
+
+.tf-add-btn:hover {
+    border-color: var(--blue-400);
+    color: var(--blue-400);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.tf-add-btn span {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.tf-remove-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--duration-fast) ease;
+}
+
+.tf-remove-btn:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* ============================================
+   Select Dropdown
+   ============================================ */
+.tf-select {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    transition: border-color var(--duration-fast) ease;
+}
+
+.tf-select:focus {
+    border-color: var(--blue-500);
+}
+
+.tf-select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+/* ============================================
+   Grid Layout for Cities
+   ============================================ */
+.tf-choices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.tf-choices-grid .tf-choice {
+    justify-content: center;
+    padding: 14px 16px;
+}
+
+.tf-choices-grid .tf-choice-key {
+    display: none;
+}
+
+/* ============================================
+   Optional Badge
+   ============================================ */
+.tf-optional {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+/* ============================================
+   Custom Calendar
+   ============================================ */
+.tf-calendar-container {
+    margin-top: 24px;
+    animation: fadeInUp 0.3s var(--ease-out-expo);
+}
+
+.tf-calendar {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.tf-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tf-calendar-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.tf-calendar-title span:last-child {
+    color: var(--blue-400);
+}
+
+.tf-calendar-nav {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--duration-fast) ease;
+}
+
+.tf-calendar-nav:hover {
+    border-color: var(--blue-500);
+    color: var(--blue-400);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.tf-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.tf-calendar-weekdays span {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 8px 0;
+}
+
+.tf-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.tf-calendar-day {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all var(--duration-fast) ease;
+}
+
+.tf-calendar-day:hover:not(.disabled):not(.selected) {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--blue-400);
+}
+
+.tf-calendar-day.today {
+    border: 2px solid var(--blue-500);
+}
+
+.tf-calendar-day.selected {
+    background: var(--blue-500);
+    color: white;
+    font-weight: 600;
+}
+
+.tf-calendar-day.disabled {
+    color: var(--text-muted);
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.tf-calendar-day.other-month {
+    color: var(--text-muted);
+    opacity: 0.3;
+}
+
+.tf-calendar-selected {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.tf-calendar-selected span {
+    color: var(--blue-400);
+    font-weight: 600;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   Final Success Screen Enhanced
+   ============================================ */
+.tf-final-content {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.tf-success-animated {
+    animation: successBounce 0.6s var(--ease-out-expo);
+}
+
+@keyframes successBounce {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.tf-title-success {
+    font-size: 2rem !important;
+    margin-bottom: 16px;
+}
+
+.tf-highlight-name {
+    color: var(--blue-400);
+    position: relative;
+}
+
+.tf-subtitle-success {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.tf-success-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.tf-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.tf-summary-icon {
+    font-size: 1.3rem;
+}
+
+.tf-summary-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.tf-btn-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.tf-btn-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(90deg, var(--blue-500), var(--blue-400), var(--blue-500));
+    border-radius: inherit;
+    z-index: -1;
+    animation: btnGlow 2s linear infinite;
+    filter: blur(8px);
+    opacity: 0.6;
+}
+
+@keyframes btnGlow {
+    0%, 100% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.tf-btn-send .btn-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tf-btn-send .btn-icon {
+    font-size: 1.2rem;
+}
+
+.tf-success-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+.tf-confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Confetti animation particles */
+.confetti-particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
     }
 }
