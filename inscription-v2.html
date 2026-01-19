@@ -13,7 +13,7 @@
     <div class="tf-progress">
         <div class="tf-progress-bar" id="progressBar"></div>
         <div class="tf-progress-text">
-            <span id="currentQuestion">1</span> / <span id="totalQuestions">25</span>
+            <span id="currentQuestion">1</span> / <span id="totalQuestions">26</span>
         </div>
     </div>
 
@@ -550,28 +550,109 @@
                             <input type="checkbox" name="cities" value="toulon">
                             <span class="tf-choice-text">Toulon</span>
                         </label>
-                        <label class="tf-choice tf-choice-tag">
-                            <input type="checkbox" name="cities" value="remote">
-                            <span class="tf-choice-text">🏠 Remote</span>
-                        </label>
                         <label class="tf-choice tf-choice-tag tf-choice-other" id="customCityChoice">
                             <input type="checkbox" name="cities" value="custom_france" class="custom-city-main-checkbox">
-                            <span class="tf-choice-text">✏️ Autre</span>
+                            <span class="tf-choice-text">✏️ Autres villes</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag tf-choice-other" id="otherCitiesChoice" style="display: none;">
+                            <input type="checkbox" name="cities" value="other">
+                            <span class="tf-choice-text">🌍 Villes d'autres pays</span>
                         </label>
                     </div>
 
-                    <!-- Popup pour ville personnalisée -->
+                    <!-- Option "N'importe quelle ville" pour France -->
+                    <div class="tf-anywhere-wrapper" id="anywhereWrapperFrance">
+                        <span class="tf-anywhere-link" id="anywhereLinkFrance">N'importe quelle ville</span>
+                        <input type="hidden" name="anywhereCityFrance" value="" id="anywhereHiddenFrance">
+                    </div>
+
+                    <!-- Popup pour ville personnalisée France (multi-villes avec tags) -->
                     <div class="tf-custom-city-popup" id="customCityPopup" style="display: none;">
                         <div class="tf-popup-arrow"></div>
-                        <input type="text" name="customCityFrance" id="customCityFranceInput" class="tf-popup-input" placeholder="Entrez votre ville...">
+                        <div class="tf-city-tags" id="cityTagsFrance"></div>
+                        <input type="text" name="customCityFrance" id="customCityFranceInput" class="tf-popup-input" placeholder="Entrez une ville et appuyez sur Entrée...">
+                    </div>
+
+                    <!-- Sélecteur de villes pour autres pays -->
+                    <div class="tf-other-cities" id="otherCitiesSelector" style="display: none;">
+                        <div class="tf-choices tf-choices-multi tf-cities-list" id="otherCitiesList">
+                            <!-- Villes générées dynamiquement par JS -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Question 10: Work Flexibility -->
+            <!-- Question 10: Languages -->
             <div class="tf-question" data-question="10">
                 <div class="tf-question-content">
                     <span class="tf-question-number">10 →</span>
+                    <h1 class="tf-title">Dans quelle(s) langue(s) pouvez-vous travailler ?</h1>
+                    <p class="tf-subtitle">Sélectionnez les langues que vous maîtrisez professionnellement</p>
+
+                    <div class="tf-choices tf-choices-multi">
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="francais">
+                            <span class="tf-choice-text">🇫🇷 Français</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="anglais">
+                            <span class="tf-choice-text">🇬🇧 Anglais</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="espagnol">
+                            <span class="tf-choice-text">🇪🇸 Espagnol</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="allemand">
+                            <span class="tf-choice-text">🇩🇪 Allemand</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="italien">
+                            <span class="tf-choice-text">🇮🇹 Italien</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="portugais">
+                            <span class="tf-choice-text">🇵🇹 Portugais</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="neerlandais">
+                            <span class="tf-choice-text">🇳🇱 Néerlandais</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="chinois">
+                            <span class="tf-choice-text">🇨🇳 Chinois</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="japonais">
+                            <span class="tf-choice-text">🇯🇵 Japonais</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="arabe">
+                            <span class="tf-choice-text">🇸🇦 Arabe</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag">
+                            <input type="checkbox" name="languages" value="russe">
+                            <span class="tf-choice-text">🇷🇺 Russe</span>
+                        </label>
+                        <label class="tf-choice tf-choice-tag tf-choice-other" id="otherLanguageChoice">
+                            <input type="checkbox" name="languages" value="other" class="other-language-checkbox">
+                            <span class="tf-choice-text">✏️ Autre langue...</span>
+                        </label>
+                    </div>
+
+                    <!-- Input pour autre langue -->
+                    <div class="tf-custom-city-popup" id="otherLanguagePopup" style="display: none;">
+                        <div class="tf-popup-arrow"></div>
+                        <div class="tf-city-tags" id="languageTagsOther"></div>
+                        <input type="text" name="otherLanguage" id="otherLanguageInput" class="tf-popup-input" placeholder="Entrez une langue et appuyez sur Entrée...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 11: Work Flexibility -->
+            <div class="tf-question" data-question="11">
+                <div class="tf-question-content">
+                    <span class="tf-question-number">11 →</span>
                     <h1 class="tf-title">Votre préférence de travail ?</h1>
 
                     <div class="tf-choices tf-choices-list">
@@ -603,10 +684,10 @@
                 </div>
             </div>
 
-            <!-- Question 11: Salary -->
-            <div class="tf-question" data-question="11">
+            <!-- Question 12: Salary -->
+            <div class="tf-question" data-question="12">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">11 →</span>
+                    <span class="tf-question-number">12 →</span>
                     <h1 class="tf-title">Vos prétentions salariales ?</h1>
                     <p class="tf-subtitle">Salaire brut annuel souhaité</p>
 
@@ -647,10 +728,10 @@
                 </div>
             </div>
 
-            <!-- Question 12: Seniority Level -->
-            <div class="tf-question" data-question="12">
+            <!-- Question 13: Seniority Level -->
+            <div class="tf-question" data-question="13">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">12 →</span>
+                    <span class="tf-question-number">13 →</span>
                     <h1 class="tf-title">Quel est votre niveau d'expérience ?</h1>
 
                     <div class="tf-choices tf-choices-list">
@@ -688,10 +769,10 @@
                 </div>
             </div>
 
-            <!-- Question 13: Availability -->
-            <div class="tf-question" data-question="13">
+            <!-- Question 14: Availability -->
+            <div class="tf-question" data-question="14">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">13 →</span>
+                    <span class="tf-question-number">14 →</span>
                     <h1 class="tf-title">Quand êtes-vous disponible ?</h1>
 
                     <div class="tf-choices tf-choices-list">
@@ -762,7 +843,7 @@
             </div>
 
             <!-- ==================== POPUP TRANSITION ==================== -->
-            <div class="tf-question tf-popup-transition" data-question="14">
+            <div class="tf-question tf-popup-transition" data-question="15">
                 <div class="tf-question-content tf-popup-content">
                     <div class="tf-popup-icon">🚀</div>
                     <h1 class="tf-title">Parfait <span id="popupFirstName"></span> !</h1>
@@ -777,10 +858,10 @@
 
             <!-- ==================== PARTIE 2: PROFIL ==================== -->
 
-            <!-- Question 15: Program Type -->
-            <div class="tf-question" data-question="15">
+            <!-- Question 16: Program Type -->
+            <div class="tf-question" data-question="16">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">15 →</span>
+                    <span class="tf-question-number">16 →</span>
                     <h1 class="tf-title">Quel type de programme ?</h1>
 
                     <div class="tf-choices tf-choices-list">
@@ -823,10 +904,10 @@
                 </div>
             </div>
 
-            <!-- Question 16: Current School -->
-            <div class="tf-question" data-question="16">
+            <!-- Question 17: Current School -->
+            <div class="tf-question" data-question="17">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">16 →</span>
+                    <span class="tf-question-number">17 →</span>
                     <h1 class="tf-title">Dans quelle école êtes-vous ?</h1>
                     <p class="tf-subtitle">Votre établissement actuel (ou dernier diplôme)</p>
 
@@ -837,10 +918,10 @@
                 </div>
             </div>
 
-            <!-- Question 17: Current Year -->
-            <div class="tf-question" data-question="17">
+            <!-- Question 18: Current Year -->
+            <div class="tf-question" data-question="18">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">17 →</span>
+                    <span class="tf-question-number">18 →</span>
                     <h1 class="tf-title">En quelle année êtes-vous ?</h1>
 
                     <div class="tf-choices tf-choices-inline">
@@ -872,10 +953,10 @@
                 </div>
             </div>
 
-            <!-- Question 18: Major -->
-            <div class="tf-question" data-question="18">
+            <!-- Question 19: Major -->
+            <div class="tf-question" data-question="19">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">18 →</span>
+                    <span class="tf-question-number">19 →</span>
                     <h1 class="tf-title">Quelle est votre spécialisation ?</h1>
                     <p class="tf-subtitle">Votre majeure ou domaine d'études</p>
 
@@ -886,10 +967,10 @@
                 </div>
             </div>
 
-            <!-- Question 19: Experiences -->
-            <div class="tf-question" data-question="19">
+            <!-- Question 20: Experiences -->
+            <div class="tf-question" data-question="20">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">19 →</span>
+                    <span class="tf-question-number">20 →</span>
                     <h1 class="tf-title">Vos expériences professionnelles</h1>
                     <p class="tf-subtitle">Stages, alternances, emplois...</p>
 
@@ -911,10 +992,10 @@
                 </div>
             </div>
 
-            <!-- Question 20: Profile Description -->
-            <div class="tf-question" data-question="20">
+            <!-- Question 21: Profile Description -->
+            <div class="tf-question" data-question="21">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">20 →</span>
+                    <span class="tf-question-number">21 →</span>
                     <h1 class="tf-title">Décrivez-vous en quelques lignes</h1>
                     <p class="tf-subtitle">L'IA utilisera cette description pour personnaliser vos candidatures</p>
 
@@ -925,10 +1006,10 @@
                 </div>
             </div>
 
-            <!-- Question 21: CV URL -->
-            <div class="tf-question" data-question="21">
+            <!-- Question 22: CV URL -->
+            <div class="tf-question" data-question="22">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">21 →</span>
+                    <span class="tf-question-number">22 →</span>
                     <h1 class="tf-title">Partagez votre CV</h1>
                     <p class="tf-subtitle">Lien Google Drive, Dropbox, ou autre</p>
 
@@ -947,10 +1028,10 @@
                 </div>
             </div>
 
-            <!-- Question 22: LinkedIn -->
-            <div class="tf-question" data-question="22">
+            <!-- Question 23: LinkedIn -->
+            <div class="tf-question" data-question="23">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">22 →</span>
+                    <span class="tf-question-number">23 →</span>
                     <h1 class="tf-title">Votre profil LinkedIn</h1>
                     <p class="tf-subtitle">Facultatif - Un atout pour vos candidatures</p>
 
@@ -963,10 +1044,10 @@
                 </div>
             </div>
 
-            <!-- Question 23: Portfolio/Project URL -->
-            <div class="tf-question" data-question="23">
+            <!-- Question 24: Portfolio/Project URL -->
+            <div class="tf-question" data-question="24">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">23 →</span>
+                    <span class="tf-question-number">24 →</span>
                     <h1 class="tf-title">Avez-vous un portfolio ou site web ?</h1>
                     <p class="tf-subtitle">Facultatif - Montrez vos projets personnels</p>
 
@@ -981,10 +1062,10 @@
 
             <!-- ==================== PARTIE 3: CONTACT ==================== -->
 
-            <!-- Question 24: Email -->
-            <div class="tf-question" data-question="24">
+            <!-- Question 25: Email -->
+            <div class="tf-question" data-question="25">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">24 →</span>
+                    <span class="tf-question-number">25 →</span>
                     <h1 class="tf-title">Quelle est votre adresse email ?</h1>
                     <p class="tf-subtitle">Les candidatures seront envoyées depuis cette adresse</p>
 
@@ -1016,10 +1097,10 @@
                 </div>
             </div>
 
-            <!-- Question 25: Phone (Last) -->
-            <div class="tf-question" data-question="25">
+            <!-- Question 26: Phone (Last) -->
+            <div class="tf-question" data-question="26">
                 <div class="tf-question-content">
-                    <span class="tf-question-number">25 →</span>
+                    <span class="tf-question-number">26 →</span>
                     <h1 class="tf-title">Votre numéro de téléphone</h1>
                     <p class="tf-subtitle">Facultatif - Pour que les recruteurs puissent vous contacter</p>
 

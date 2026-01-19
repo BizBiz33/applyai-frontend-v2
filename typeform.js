@@ -5,8 +5,8 @@
 
 // Configuration
 const N8N_WEBHOOK_URL = 'https://bizbiz.app.n8n.cloud/webhook/user-registration';
-const TOTAL_QUESTIONS = 25;
-const POPUP_QUESTION = 14; // La question de transition
+const TOTAL_QUESTIONS = 26;
+const POPUP_QUESTION = 15; // La question de transition
 const DURATION_QUESTION = 5; // Question de durée (stage/CDD)
 
 // Experience counter
@@ -46,7 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initOtherDomainsSelector();
     initOtherCitiesSelector();
     initCustomCityFranceInput();
+    initAnywhereCityFrance();
     initCustomCountryInput();
+    initOtherLanguageInput();
 
     // Focus first input after animation
     setTimeout(() => {
@@ -410,10 +412,13 @@ function validateCurrentQuestion() {
         }
     }
 
-    // Validation for cities (multi-select) - at least one required (Q9)
+    // Validation for cities (multi-select) - at least one required OR "anywhere" (Q9)
     if (currentQuestion === 9) {
         const checkedCities = currentEl.querySelectorAll('input[name="cities"]:checked');
-        if (checkedCities.length === 0) {
+        const anywhereHidden = document.getElementById('anywhereHiddenFrance');
+        const isAnywhereSelected = anywhereHidden && anywhereHidden.value === 'anywhere';
+
+        if (checkedCities.length === 0 && !isAnywhereSelected) {
             isValid = false;
             shakeElement(currentEl.querySelector('.tf-choices'));
         }
@@ -431,8 +436,17 @@ function validateCurrentQuestion() {
         }
     }
 
-    // Validation for custom date if selected (Q13)
-    if (currentQuestion === 13) {
+    // Validation for languages (multi-select) - at least one required (Q10)
+    if (currentQuestion === 10) {
+        const checkedLanguages = currentEl.querySelectorAll('input[name="languages"]:checked');
+        if (checkedLanguages.length === 0) {
+            isValid = false;
+            shakeElement(currentEl.querySelector('.tf-choices'));
+        }
+    }
+
+    // Validation for custom date if selected (Q14)
+    if (currentQuestion === 14) {
         const availabilityValue = currentEl.querySelector('input[name="availability"]:checked')?.value;
         if (availabilityValue === 'custom_date') {
             const dateInput = document.getElementById('availabilityDate');
@@ -563,7 +577,8 @@ function collectAllData() {
         completedEducation: [],
         experiences: experiences,
         skills: [],
-        languages: [],
+        languages: formData.languages || [],
+        otherLanguages: formData.otherLanguages || [],
         cvUrl: formData.cvUrl,
 
         jobPreferences: {
@@ -577,6 +592,8 @@ function collectAllData() {
             cities: formData.cities || [],
             otherCities: formData.otherCities || [],
             customCities: formData.customCities || {},
+            languages: formData.languages || [],
+            otherLanguages: formData.otherLanguages || [],
             flexibility: formData.flexibility || null,
             specificPosition: formData.specificPosition || null,
             salaryRange: formData.salaryRange || null,
@@ -824,73 +841,215 @@ const citiesByCountry = {
     ]
 };
 
+// Sauvegarder le HTML original des villes françaises
+let originalFrenchCitiesHTML = '';
+
 function initCountrySelector() {
+    // Sauvegarder les villes françaises au chargement
+    const citiesContainer = document.getElementById('citiesContainer');
+    if (citiesContainer) {
+        originalFrenchCitiesHTML = citiesContainer.innerHTML;
+    }
+
     // Listen for country selection changes
     document.querySelectorAll('input[name="country"]').forEach(input => {
         input.addEventListener('change', () => {
-            updateCitiesForCountry(input.value);
-
-            // Si "Autres pays" est sélectionné, cacher les villes françaises et afficher automatiquement le sélecteur d'autres villes
             const citiesContainer = document.getElementById('citiesContainer');
             const otherCitiesSelector = document.getElementById('otherCitiesSelector');
-            const otherCityCheckbox = document.querySelector('input[name="cities"][value="other"]');
+            const customCityPopup = document.getElementById('customCityPopup');
+            const customCityPopupDynamic = document.getElementById('customCityPopupDynamic');
+            const anywhereWrapperFrance = document.getElementById('anywhereWrapperFrance');
 
             if (input.value === 'other') {
-                // Cacher les villes françaises principales (sauf remote et options "autre")
+                // Pour "Autres pays" : cacher les villes françaises, afficher le sélecteur d'autres villes
                 if (citiesContainer) {
-                    citiesContainer.querySelectorAll('input[name="cities"]').forEach(cityInput => {
-                        const label = cityInput.closest('.tf-choice');
-                        if (cityInput.value !== 'remote' && cityInput.value !== 'other' && cityInput.value !== 'custom_france') {
+                    // Cacher toutes les villes
+                    citiesContainer.querySelectorAll('.tf-choice').forEach(label => {
+                        const cityInput = label.querySelector('input[name="cities"]');
+                        if (cityInput && cityInput.value !== 'remote') {
                             label.style.display = 'none';
                             cityInput.checked = false;
                         }
                     });
-                    // Afficher automatiquement le sélecteur d'autres villes
-                    if (otherCityCheckbox) {
-                        otherCityCheckbox.checked = true;
-                        updateCheckboxState(otherCityCheckbox);
-                    }
-                    if (otherCitiesSelector) {
-                        otherCitiesSelector.style.display = 'block';
-                        populateOtherCities();
-                    }
-                    // Cacher l'option "Autre ville (écrire)" pour France
-                    const customCityChoice = document.getElementById('customCityChoice');
-                    if (customCityChoice) customCityChoice.style.display = 'none';
+                    // Cacher les popups
+                    if (customCityPopup) customCityPopup.style.display = 'none';
+                    if (customCityPopupDynamic) customCityPopupDynamic.style.display = 'none';
                 }
+                // Cacher le "N'importe quelle ville" de France
+                if (anywhereWrapperFrance) anywhereWrapperFrance.style.display = 'none';
+                // Afficher automatiquement le sélecteur d'autres villes
+                if (otherCitiesSelector) {
+                    otherCitiesSelector.style.display = 'block';
+                    populateOtherCities();
+                }
+            } else if (input.value === 'france') {
+                // Pour France : restaurer les villes françaises statiques
+                restoreFrenchCities();
+                if (otherCitiesSelector) otherCitiesSelector.style.display = 'none';
+                if (customCityPopupDynamic) customCityPopupDynamic.style.display = 'none';
+                // Réafficher le "N'importe quelle ville" de France
+                if (anywhereWrapperFrance) anywhereWrapperFrance.style.display = 'block';
             } else {
-                // Afficher toutes les villes françaises
-                if (citiesContainer) {
-                    citiesContainer.querySelectorAll('.tf-choice').forEach(label => {
-                        label.style.display = '';
-                    });
-                    // Réafficher l'option "Autre ville (écrire)" pour France
-                    const customCityChoice = document.getElementById('customCityChoice');
-                    if (customCityChoice) customCityChoice.style.display = '';
-                }
+                // Pour les autres pays (Belgique, Suisse, etc.) : afficher leurs villes
+                updateCitiesForCountry(input.value);
+                if (otherCitiesSelector) otherCitiesSelector.style.display = 'none';
+                // Cacher le "N'importe quelle ville" de France pour les autres pays
+                if (anywhereWrapperFrance) anywhereWrapperFrance.style.display = 'none';
             }
         });
     });
 }
 
+function restoreFrenchCities() {
+    const citiesContainer = document.getElementById('citiesContainer');
+
+    if (!citiesContainer || !originalFrenchCitiesHTML) return;
+
+    // Restaurer le HTML original
+    citiesContainer.innerHTML = originalFrenchCitiesHTML;
+
+    // Réinitialiser les listeners
+    citiesContainer.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', () => {
+            updateCheckboxState(input);
+        });
+    });
+
+    // Réinitialiser le custom city input pour France
+    initCustomCityFranceInput();
+}
+
 function updateCitiesForCountry(country) {
     const citiesContainer = document.getElementById('citiesContainer');
+    const otherCitiesSelector = document.getElementById('otherCitiesSelector');
+    const customCityChoice = document.getElementById('customCityChoice');
+    const otherCitiesChoice = document.getElementById('otherCitiesChoice');
+
     if (!citiesContainer) return;
 
     const cities = citiesByCountry[country] || [];
 
-    citiesContainer.innerHTML = cities.map((city, index) => `
-        <label class="tf-choice tf-choice-tag" data-key="${String.fromCharCode(65 + index)}">
-            <input type="checkbox" name="cities" value="${city}">
+    // Générer les villes du pays + Remote + Autre ville
+    let html = cities.map(city => `
+        <label class="tf-choice tf-choice-tag">
+            <input type="checkbox" name="cities" value="${city.toLowerCase().replace(/\s+/g, '-')}">
             <span class="tf-choice-text">${city}</span>
         </label>
     `).join('');
+
+    // Ajouter Remote
+    html += `
+        <label class="tf-choice tf-choice-tag">
+            <input type="checkbox" name="cities" value="remote">
+            <span class="tf-choice-text">🏠 Remote</span>
+        </label>
+    `;
+
+    // Ajouter "Autres villes" avec saisie
+    html += `
+        <label class="tf-choice tf-choice-tag tf-choice-other" id="customCityChoiceDynamic">
+            <input type="checkbox" name="cities" value="custom_${country}" class="custom-city-dynamic-checkbox" data-country="${country}">
+            <span class="tf-choice-text">✏️ Autres villes</span>
+        </label>
+    `;
+
+    citiesContainer.innerHTML = html;
+
+    // Cacher les éléments statiques
+    if (customCityChoice) customCityChoice.style.display = 'none';
+    if (otherCitiesChoice) otherCitiesChoice.style.display = 'none';
+    if (otherCitiesSelector) otherCitiesSelector.style.display = 'none';
+
+    // Ajouter le popup pour la saisie de ville personnalisée (multi-villes avec tags)
+    let popup = document.getElementById('customCityPopupDynamic');
+    if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'customCityPopupDynamic';
+        popup.className = 'tf-custom-city-popup';
+        popup.style.display = 'none';
+        popup.innerHTML = `
+            <div class="tf-popup-arrow"></div>
+            <div class="tf-city-tags" id="cityTagsDynamic"></div>
+            <input type="text" name="customCityDynamic" id="customCityDynamicInput" class="tf-popup-input" placeholder="Entrez une ville et appuyez sur Entrée...">
+        `;
+        citiesContainer.parentNode.appendChild(popup);
+    } else {
+        // Reset tags container if popup already exists
+        const tagsContainer = popup.querySelector('.tf-city-tags');
+        if (tagsContainer) tagsContainer.innerHTML = '';
+    }
 
     // Re-init checkbox listeners for new elements
     citiesContainer.querySelectorAll('input[type="checkbox"]').forEach(input => {
         input.addEventListener('change', () => {
             updateCheckboxState(input);
         });
+    });
+
+    // Init dynamic custom city input
+    initDynamicCustomCityInput(country);
+}
+
+function initDynamicCustomCityInput(country) {
+    const customCityCheckbox = document.querySelector('.custom-city-dynamic-checkbox');
+    const customCityPopup = document.getElementById('customCityPopupDynamic');
+    const customCityInput = document.getElementById('customCityDynamicInput');
+    const cityTagsContainer = document.getElementById('cityTagsDynamic');
+
+    if (!customCityCheckbox || !customCityPopup || !customCityInput || !cityTagsContainer) return;
+
+    // Initialize cities array for this country
+    if (!formData.customCities) formData.customCities = {};
+    if (!formData.customCities[country]) formData.customCities[country] = [];
+
+    customCityCheckbox.addEventListener('change', () => {
+        if (customCityCheckbox.checked) {
+            customCityPopup.style.display = 'block';
+            setTimeout(() => {
+                customCityInput.focus();
+            }, 50);
+        } else {
+            customCityPopup.style.display = 'none';
+            customCityInput.value = '';
+            cityTagsContainer.innerHTML = '';
+            if (formData.customCities) {
+                formData.customCities[country] = [];
+            }
+        }
+    });
+
+    customCityInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const cityName = customCityInput.value.trim();
+            if (cityName) {
+                // Add city to array
+                if (!formData.customCities[country].includes(cityName)) {
+                    formData.customCities[country].push(cityName);
+
+                    // Create tag element
+                    const tag = document.createElement('span');
+                    tag.className = 'tf-city-tag';
+                    tag.innerHTML = `
+                        ${cityName}
+                        <button type="button" class="tf-tag-remove" data-city="${cityName}">&times;</button>
+                    `;
+
+                    // Add remove handler
+                    tag.querySelector('.tf-tag-remove').addEventListener('click', () => {
+                        formData.customCities[country] = formData.customCities[country].filter(c => c !== cityName);
+                        tag.remove();
+                    });
+
+                    cityTagsContainer.appendChild(tag);
+                }
+
+                // Clear input for next city
+                customCityInput.value = '';
+            }
+        }
     });
 }
 
@@ -1277,40 +1436,19 @@ function initOtherDomainsSelector() {
 // ============================================
 
 function initOtherCitiesSelector() {
-    const otherCityCheckbox = document.querySelector('input[name="cities"][value="other"]');
     const otherCitiesSelector = document.getElementById('otherCitiesSelector');
     const otherCitiesList = document.getElementById('otherCitiesList');
 
-    if (!otherCityCheckbox || !otherCitiesSelector || !otherCitiesList) return;
+    if (!otherCitiesSelector || !otherCitiesList) return;
 
-    // Listen for country selection to update city list
-    document.querySelectorAll('input[name="country"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            selectedCountry = radio.value;
-            // Update cities list when "other" is checked
-            if (otherCityCheckbox.checked) {
-                populateOtherCities();
-            }
-        });
-    });
-
-    // Also listen to other countries checkboxes
+    // Listen for other countries checkboxes changes to update cities
     document.querySelectorAll('input[name="otherCountries"]').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
-            if (otherCityCheckbox.checked) {
+            const countryRadio = document.querySelector('input[name="country"]:checked');
+            if (countryRadio && countryRadio.value === 'other') {
                 populateOtherCities();
             }
         });
-    });
-
-    otherCityCheckbox.addEventListener('change', () => {
-        if (otherCityCheckbox.checked) {
-            otherCitiesSelector.style.display = 'block';
-            populateOtherCities();
-        } else {
-            otherCitiesSelector.style.display = 'none';
-            otherCitiesList.innerHTML = '';
-        }
     });
 }
 
@@ -1382,7 +1520,97 @@ function populateOtherCities() {
         return;
     }
 
-    // Add cities for each selected country
+    // Si plusieurs pays sont sélectionnés dans "Autres pays", afficher saisie manuelle + option "N'importe"
+    if (countries.length > 1 && countryRadio && countryRadio.value === 'other') {
+        // Conteneur principal simplifié
+        const simplifiedWrapper = document.createElement('div');
+        simplifiedWrapper.className = 'tf-simplified-cities';
+        simplifiedWrapper.innerHTML = `
+            <div class="tf-city-input-wrapper">
+                <div class="tf-city-tags" id="cityTags_multi"></div>
+                <input type="text" id="multiCityInput" class="tf-input" placeholder="Tapez une ville et appuyez sur Entrée...">
+            </div>
+            <span class="tf-anywhere-link" id="anywhereCitiesLink">N'importe quelle ville</span>
+            <input type="hidden" name="otherCities" value="" id="anywhereCitiesHidden">
+        `;
+
+        otherCitiesList.appendChild(simplifiedWrapper);
+
+        const cityInput = simplifiedWrapper.querySelector('#multiCityInput');
+        const cityTagsContainer = simplifiedWrapper.querySelector('.tf-city-tags');
+        const anywhereLink = simplifiedWrapper.querySelector('#anywhereCitiesLink');
+        const anywhereHidden = simplifiedWrapper.querySelector('#anywhereCitiesHidden');
+
+        // Initialize cities array for multi-country
+        if (!formData.customCities) formData.customCities = {};
+        if (!formData.customCities.multi) formData.customCities.multi = [];
+
+        // Handle Enter key to add city as tag
+        cityInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const cityName = cityInput.value.trim();
+                if (cityName) {
+                    if (!formData.customCities.multi.includes(cityName)) {
+                        formData.customCities.multi.push(cityName);
+
+                        const tag = document.createElement('span');
+                        tag.className = 'tf-city-tag';
+                        tag.innerHTML = `
+                            ${cityName}
+                            <button type="button" class="tf-tag-remove" data-city="${cityName}">&times;</button>
+                        `;
+
+                        tag.querySelector('.tf-tag-remove').addEventListener('click', () => {
+                            formData.customCities.multi = formData.customCities.multi.filter(c => c !== cityName);
+                            tag.remove();
+                            // Réactiver le lien si plus de villes
+                            if (formData.customCities.multi.length === 0) {
+                                anywhereLink.classList.remove('tf-anywhere-disabled');
+                            }
+                        });
+
+                        cityTagsContainer.appendChild(tag);
+
+                        // Désactiver visuellement le lien "N'importe" si une ville est ajoutée
+                        anywhereLink.classList.add('tf-anywhere-disabled');
+                        anywhereHidden.value = '';
+                    }
+                    cityInput.value = '';
+                }
+            }
+        });
+
+        // Handle "N'importe quelle ville" link click
+        anywhereLink.addEventListener('click', () => {
+            if (anywhereLink.classList.contains('tf-anywhere-disabled')) return;
+
+            // Marquer comme sélectionné
+            anywhereLink.classList.toggle('tf-anywhere-active');
+
+            if (anywhereLink.classList.contains('tf-anywhere-active')) {
+                // Vider les villes saisies
+                formData.customCities.multi = [];
+                cityTagsContainer.innerHTML = '';
+                cityInput.value = '';
+                cityInput.disabled = true;
+                cityInput.placeholder = 'N\'importe quelle ville';
+                anywhereHidden.value = 'anywhere';
+                // Passer à la question suivante
+                setTimeout(() => nextQuestion(), 300);
+            } else {
+                cityInput.disabled = false;
+                cityInput.placeholder = 'Tapez une ville et appuyez sur Entrée...';
+                anywhereHidden.value = '';
+            }
+        });
+
+        return;
+    }
+
+    // Add cities for each selected country (un seul pays sélectionné)
     countries.forEach((country, countryIndex) => {
         const cities = citiesByCountry[country] || [];
         const countryName = getCountryDisplayName(country);
@@ -1406,46 +1634,149 @@ function populateOtherCities() {
             const input = label.querySelector('input');
             input.addEventListener('change', () => {
                 updateCheckboxState(input);
+                // Désactiver "N'importe quelle ville" si une ville est cochée
+                const anywhereLink = document.querySelector(`#anywhereLink_${country}`);
+                if (anywhereLink) {
+                    const checkedCities = otherCitiesList.querySelectorAll(`input[name="otherCities"]:checked:not([value="anywhere_${country}"])`);
+                    if (checkedCities.length > 0) {
+                        anywhereLink.classList.add('tf-anywhere-disabled');
+                        anywhereLink.classList.remove('tf-anywhere-active');
+                    } else {
+                        anywhereLink.classList.remove('tf-anywhere-disabled');
+                    }
+                }
             });
 
             otherCitiesList.appendChild(label);
         });
 
-        // Add "Autre ville" option with text input for each country
+        // Add "Autres villes" option with multi-tag input for each country
         const otherCityWrapper = document.createElement('div');
         otherCityWrapper.className = 'tf-custom-city-wrapper';
         otherCityWrapper.innerHTML = `
             <label class="tf-choice tf-choice-tag tf-choice-other">
                 <input type="checkbox" name="otherCities" value="custom_${country}" class="custom-city-checkbox" data-country="${country}">
-                <span class="tf-choice-text">✏️ Autre ville${countries.length > 1 ? ' (' + countryName + ')' : ''}...</span>
+                <span class="tf-choice-text">✏️ Autres villes${countries.length > 1 ? ' (' + countryName + ')' : ''}...</span>
             </label>
             <div class="tf-custom-city-input" style="display: none;">
-                <input type="text" name="customCity_${country}" class="tf-input tf-input-small" placeholder="Entrez le nom de la ville">
+                <div class="tf-city-tags" id="cityTags_${country}"></div>
+                <input type="text" name="customCity_${country}" class="tf-input tf-input-small" placeholder="Entrez une ville et appuyez sur Entrée...">
             </div>
         `;
 
         const customCheckbox = otherCityWrapper.querySelector('.custom-city-checkbox');
         const customInputWrapper = otherCityWrapper.querySelector('.tf-custom-city-input');
         const customInput = otherCityWrapper.querySelector('input[type="text"]');
+        const cityTagsContainer = otherCityWrapper.querySelector('.tf-city-tags');
+
+        // Initialize cities array for this country
+        if (!formData.customCities) formData.customCities = {};
+        if (!formData.customCities[country]) formData.customCities[country] = [];
 
         customCheckbox.addEventListener('change', () => {
             updateCheckboxState(customCheckbox);
             if (customCheckbox.checked) {
                 customInputWrapper.style.display = 'block';
                 customInput.focus();
+                // Désactiver "N'importe quelle ville"
+                const anywhereLink = document.querySelector(`#anywhereLink_${country}`);
+                if (anywhereLink) {
+                    anywhereLink.classList.add('tf-anywhere-disabled');
+                    anywhereLink.classList.remove('tf-anywhere-active');
+                }
             } else {
                 customInputWrapper.style.display = 'none';
                 customInput.value = '';
+                cityTagsContainer.innerHTML = '';
+                formData.customCities[country] = [];
+                // Réactiver "N'importe quelle ville" si aucune ville cochée
+                const anywhereLink = document.querySelector(`#anywhereLink_${country}`);
+                if (anywhereLink) {
+                    const checkedCities = otherCitiesList.querySelectorAll(`input[name="otherCities"]:checked:not([value="anywhere_${country}"])`);
+                    if (checkedCities.length === 0) {
+                        anywhereLink.classList.remove('tf-anywhere-disabled');
+                    }
+                }
             }
         });
 
-        // Update formData when custom city input changes
-        customInput.addEventListener('input', () => {
-            if (!formData.customCities) formData.customCities = {};
-            formData.customCities[country] = customInput.value;
+        // Handle Enter key to add city as tag
+        customInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const cityName = customInput.value.trim();
+                if (cityName) {
+                    if (!formData.customCities[country].includes(cityName)) {
+                        formData.customCities[country].push(cityName);
+
+                        const tag = document.createElement('span');
+                        tag.className = 'tf-city-tag';
+                        tag.innerHTML = `
+                            ${cityName}
+                            <button type="button" class="tf-tag-remove" data-city="${cityName}">&times;</button>
+                        `;
+
+                        tag.querySelector('.tf-tag-remove').addEventListener('click', () => {
+                            formData.customCities[country] = formData.customCities[country].filter(c => c !== cityName);
+                            tag.remove();
+                        });
+
+                        cityTagsContainer.appendChild(tag);
+                    }
+                    customInput.value = '';
+                }
+            }
         });
 
         otherCitiesList.appendChild(otherCityWrapper);
+
+        // Add "N'importe quelle ville" link for this country
+        const anywhereWrapper = document.createElement('div');
+        anywhereWrapper.className = 'tf-anywhere-wrapper';
+        anywhereWrapper.innerHTML = `
+            <span class="tf-anywhere-link" id="anywhereLink_${country}">N'importe quelle ville</span>
+            <input type="hidden" name="anywhereCity_${country}" value="" id="anywhereHidden_${country}">
+        `;
+
+        const anywhereLink = anywhereWrapper.querySelector('.tf-anywhere-link');
+        const anywhereHidden = anywhereWrapper.querySelector('input[type="hidden"]');
+
+        anywhereLink.addEventListener('click', () => {
+            if (anywhereLink.classList.contains('tf-anywhere-disabled')) return;
+
+            anywhereLink.classList.toggle('tf-anywhere-active');
+
+            if (anywhereLink.classList.contains('tf-anywhere-active')) {
+                // Décocher toutes les villes pour ce pays
+                otherCitiesList.querySelectorAll(`input[name="otherCities"]`).forEach(cb => {
+                    if (cb.checked) {
+                        cb.checked = false;
+                        updateCheckboxState(cb);
+                    }
+                });
+                // Vider les villes personnalisées
+                if (formData.customCities && formData.customCities[country]) {
+                    formData.customCities[country] = [];
+                }
+                cityTagsContainer.innerHTML = '';
+                customInputWrapper.style.display = 'none';
+                anywhereHidden.value = 'anywhere';
+                // Stocker dans formData
+                if (!formData.anywhereCities) formData.anywhereCities = {};
+                formData.anywhereCities[country] = true;
+                // Passer à la question suivante
+                setTimeout(() => nextQuestion(), 300);
+            } else {
+                anywhereHidden.value = '';
+                if (formData.anywhereCities) {
+                    formData.anywhereCities[country] = false;
+                }
+            }
+        });
+
+        otherCitiesList.appendChild(anywhereWrapper);
 
         // Add separator between countries if multiple
         if (countries.length > 1 && countryIndex < countries.length - 1) {
@@ -1464,12 +1795,16 @@ function initCustomCityFranceInput() {
     const customCityCheckbox = document.querySelector('.custom-city-main-checkbox');
     const customCityPopup = document.getElementById('customCityPopup');
     const customCityInput = document.getElementById('customCityFranceInput');
+    const cityTagsContainer = document.getElementById('cityTagsFrance');
 
-    if (!customCityCheckbox || !customCityPopup || !customCityInput) return;
+    if (!customCityCheckbox || !customCityPopup || !customCityInput || !cityTagsContainer) return;
+
+    // Initialize cities array for France
+    if (!formData.customCities) formData.customCities = {};
+    if (!formData.customCities.france_main) formData.customCities.france_main = [];
 
     customCityCheckbox.addEventListener('change', () => {
         if (customCityCheckbox.checked) {
-            // Position popup below the "Autre" button
             customCityPopup.style.display = 'block';
             setTimeout(() => {
                 customCityInput.focus();
@@ -1477,26 +1812,106 @@ function initCustomCityFranceInput() {
         } else {
             customCityPopup.style.display = 'none';
             customCityInput.value = '';
-            // Remove from formData
+            cityTagsContainer.innerHTML = '';
             if (formData.customCities) {
-                delete formData.customCities.france_main;
+                formData.customCities.france_main = [];
             }
         }
     });
 
-    // Update formData when input changes
-    customCityInput.addEventListener('input', () => {
-        if (!formData.customCities) formData.customCities = {};
-        formData.customCities.france_main = customCityInput.value;
-    });
-
-    // Allow Enter to validate
+    // Handle Enter key to add city as tag
     customCityInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             e.stopPropagation();
-            // Keep the popup open but just blur the input
-            customCityInput.blur();
+
+            const cityName = customCityInput.value.trim();
+            if (cityName) {
+                // Add city to array if not already present
+                if (!formData.customCities.france_main.includes(cityName)) {
+                    formData.customCities.france_main.push(cityName);
+
+                    // Create tag element
+                    const tag = document.createElement('span');
+                    tag.className = 'tf-city-tag';
+                    tag.innerHTML = `
+                        ${cityName}
+                        <button type="button" class="tf-tag-remove" data-city="${cityName}">&times;</button>
+                    `;
+
+                    // Add remove handler
+                    tag.querySelector('.tf-tag-remove').addEventListener('click', () => {
+                        formData.customCities.france_main = formData.customCities.france_main.filter(c => c !== cityName);
+                        tag.remove();
+                    });
+
+                    cityTagsContainer.appendChild(tag);
+                }
+
+                // Clear input for next city
+                customCityInput.value = '';
+            }
+        }
+    });
+}
+
+// ============================================
+// ANYWHERE CITY FRANCE (Q9) - "N'importe quelle ville"
+// ============================================
+
+function initAnywhereCityFrance() {
+    const anywhereLink = document.getElementById('anywhereLinkFrance');
+    const anywhereHidden = document.getElementById('anywhereHiddenFrance');
+    const citiesContainer = document.getElementById('citiesContainer');
+    const customCityCheckbox = document.querySelector('.custom-city-main-checkbox');
+    const customCityPopup = document.getElementById('customCityPopup');
+    const cityTagsContainer = document.getElementById('cityTagsFrance');
+
+    if (!anywhereLink || !anywhereHidden || !citiesContainer) return;
+
+    // Listen to city checkbox changes to disable/enable "N'importe quelle ville"
+    citiesContainer.querySelectorAll('input[name="cities"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const checkedCities = citiesContainer.querySelectorAll('input[name="cities"]:checked');
+            if (checkedCities.length > 0) {
+                anywhereLink.classList.add('tf-anywhere-disabled');
+                anywhereLink.classList.remove('tf-anywhere-active');
+                anywhereHidden.value = '';
+            } else {
+                anywhereLink.classList.remove('tf-anywhere-disabled');
+            }
+        });
+    });
+
+    // Handle "N'importe quelle ville" link click
+    anywhereLink.addEventListener('click', () => {
+        if (anywhereLink.classList.contains('tf-anywhere-disabled')) return;
+
+        anywhereLink.classList.toggle('tf-anywhere-active');
+
+        if (anywhereLink.classList.contains('tf-anywhere-active')) {
+            // Décocher toutes les villes
+            citiesContainer.querySelectorAll('input[name="cities"]:checked').forEach(cb => {
+                cb.checked = false;
+                updateCheckboxState(cb);
+            });
+            // Vider les villes personnalisées
+            if (formData.customCities && formData.customCities.france_main) {
+                formData.customCities.france_main = [];
+            }
+            if (cityTagsContainer) cityTagsContainer.innerHTML = '';
+            if (customCityPopup) customCityPopup.style.display = 'none';
+            anywhereHidden.value = 'anywhere';
+            // Stocker dans formData
+            if (!formData.anywhereCities) formData.anywhereCities = {};
+            formData.anywhereCities.france = true;
+            // Passer à la question suivante
+            setTimeout(() => nextQuestion(), 300);
+        } else {
+            anywhereHidden.value = '';
+            if (formData.anywhereCities) {
+                formData.anywhereCities.france = false;
+            }
         }
     });
 }
@@ -1527,6 +1942,66 @@ function initCustomCountryInput() {
     // Update formData when input changes
     customCountryInput.addEventListener('input', () => {
         formData.customCountry = customCountryInput.value;
+    });
+}
+
+// ============================================
+// OTHER LANGUAGE INPUT (Q10)
+// ============================================
+
+function initOtherLanguageInput() {
+    const otherLanguageCheckbox = document.querySelector('.other-language-checkbox');
+    const otherLanguagePopup = document.getElementById('otherLanguagePopup');
+    const otherLanguageInput = document.getElementById('otherLanguageInput');
+    const languageTagsContainer = document.getElementById('languageTagsOther');
+
+    if (!otherLanguageCheckbox || !otherLanguagePopup || !otherLanguageInput || !languageTagsContainer) return;
+
+    // Initialize other languages array
+    if (!formData.otherLanguages) formData.otherLanguages = [];
+
+    otherLanguageCheckbox.addEventListener('change', () => {
+        if (otherLanguageCheckbox.checked) {
+            otherLanguagePopup.style.display = 'block';
+            setTimeout(() => {
+                otherLanguageInput.focus();
+            }, 50);
+        } else {
+            otherLanguagePopup.style.display = 'none';
+            otherLanguageInput.value = '';
+            languageTagsContainer.innerHTML = '';
+            formData.otherLanguages = [];
+        }
+    });
+
+    // Handle Enter key to add language as tag
+    otherLanguageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const languageName = otherLanguageInput.value.trim();
+            if (languageName) {
+                if (!formData.otherLanguages.includes(languageName)) {
+                    formData.otherLanguages.push(languageName);
+
+                    const tag = document.createElement('span');
+                    tag.className = 'tf-city-tag';
+                    tag.innerHTML = `
+                        ${languageName}
+                        <button type="button" class="tf-tag-remove" data-language="${languageName}">&times;</button>
+                    `;
+
+                    tag.querySelector('.tf-tag-remove').addEventListener('click', () => {
+                        formData.otherLanguages = formData.otherLanguages.filter(l => l !== languageName);
+                        tag.remove();
+                    });
+
+                    languageTagsContainer.appendChild(tag);
+                }
+                otherLanguageInput.value = '';
+            }
+        }
     });
 }
 
@@ -1807,6 +2282,63 @@ style.textContent = `
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* City tags styles */
+    .tf-city-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .tf-city-tags:empty {
+        margin-bottom: 0;
+    }
+
+    .tf-city-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: var(--blue-500);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        animation: tagAppear 0.2s ease-out;
+    }
+
+    .tf-tag-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .tf-tag-remove:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes tagAppear {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 `;
 document.head.appendChild(style);
